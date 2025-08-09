@@ -1,30 +1,23 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import React from 'react'
+import TicTacToe from './tictactoe'
+import TowerDefense from './TowerDefense'
+import { BrowserRouter as Router, Routes,Route, Link } from 'react-router-dom'
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div className="text-blue-500">Test Tailwind is working</div>
-      <div className="p-8">
-        <h1 className="text-2xl font-bold mb-6">My Simple Grid</h1>
-
-        {/* Grid container */}
-        <div className="grid grid-cols-3 gap-4">
-          {/* Grid items */}
-          <div className="bg-blue-500 text-white p-4 rounded">1</div>
-          <div className="bg-blue-500 text-white p-4 rounded">2</div>
-          <div className="bg-blue-500 text-white p-4 rounded">3</div>
-          <div className="bg-blue-500 text-white p-4 rounded">4</div>
-          <div className="bg-blue-500 text-white p-4 rounded">5</div>
-          <div className="bg-blue-500 text-white p-4 rounded">6</div>
-        </div>
-      </div>
-    </>
-  )
+    <Router>
+      <nav className="p-4 bg-gray-200">
+        <Link className="mr-4  hover:underline" to="/">Home</Link>
+        <Link className="p-2 hover:underline" to="/tictactoe">Tic Tac Toe</Link>
+        <Link className="p-2 hover:underline" to="/towerdefense">Tower Defense</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<h3>Welcome this is the React Playground Home</h3>} />
+        <Route path="/tictactoe" element={<TicTacToe />} />
+        <Route path="/towerdefense" element={<TowerDefense />} />
+      </Routes>
+    </Router>
+  );
 }
-
 export default App
