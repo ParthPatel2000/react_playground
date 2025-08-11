@@ -2,7 +2,8 @@ import './App.css'
 import React from 'react'
 import TicTacToe from './tictactoe'
 import TowerDefense from './TowerDefense'
-import { BrowserRouter as Router, Routes,Route, Link } from 'react-router-dom'
+import TwoZeroFourEight from './game_2048/TwoZeroFourEight'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 function App() {
   return (
@@ -11,11 +12,13 @@ function App() {
         <Link className="mr-4  hover:underline" to="/">Home</Link>
         <Link className="p-2 hover:underline" to="/tictactoe">Tic Tac Toe</Link>
         <Link className="p-2 hover:underline" to="/towerdefense">Tower Defense</Link>
+        <Link className="p-2 hover:underline" to="/2048">2048</Link>
       </nav>
       <Routes>
         <Route path="/" element={<h3>Welcome this is the React Playground Home</h3>} />
         <Route path="/tictactoe" element={<TicTacToe />} />
         <Route path="/towerdefense" element={<TowerDefense />} />
+        <Route path="/2048" element={<TwoZeroFourEight />} />
       </Routes>
     </Router>
   );
