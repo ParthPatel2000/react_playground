@@ -24,6 +24,7 @@ export default function TwoZeroFourEight() {
     const boardRef = React.useRef(board);
     const scoreRef = React.useRef(score);
     const movesRef = React.useRef(moves);
+    const isAiRunningRef = React.useRef(isAiRunning);
 
     {/** Initialize the gameboard */ }
     useEffect(() => {
@@ -71,25 +72,86 @@ export default function TwoZeroFourEight() {
         boardRef.current = board;
         scoreRef.current = score;
         movesRef.current = moves;
-    }, [board, score, moves]);
+        isAiRunningRef.current = isAiRunning;
+    }, [board, score, moves, isAiRunning]);
 
 
     {/** Auto play AI Logic */ }
+    // useEffect(() => {
+    //     if (isGameOver) {
+    //         setIsAiRunning(false);
+    //         return;
+    //     }
+    //     if (!isAiRunning || isGameOver) return;
+
+    //     const interval = setInterval(async () => {
+    //         const currentBoard = boardRef.current;
+
+    //         const bestMoveObj = await getMove(currentBoard, aiModel);
+
+    //         if (!bestMoveObj || !bestMoveObj.direction) {
+    //             setIsAiRunning(false); // Stop AI if no valid moves
+    //             clearInterval(interval);
+    //             return;
+    //         }
+
+    //         move(bestMoveObj.direction);
+
+    //         setBoard(getGameboard().map(row => [...row]));
+    //         setScore(getScore());
+    //         setIsGameOver(getIsGameOver());
+    //         setMoves(getMovesCount());
+    //     }, 25);
+
+    //     return () => clearInterval(interval);
+    // }, [isAiRunning, isGameOver]);
     useEffect(() => {
-        if (isGameOver) {
-            setIsAiRunning(false);
-            return;
+        if (!isAiRunningRef.current || isGameOver) return;
+
+        // --- Heuristic AI (fast local moves) ---
+        if (aiModel !== "pythonQ") {
+            const interval = setInterval(async () => {
+                if (isGameOver) {
+                    clearInterval(interval);
+                    setIsAiRunning(false);
+                    return;
+                }
+
+                const bestMoveObj = await getMove(boardRef.current, aiModel);
+                if (!bestMoveObj || !bestMoveObj.direction) {
+                    clearInterval(interval);
+                    setIsAiRunning(false);
+                    return;
+                }
+
+                move(bestMoveObj.direction);
+
+                setBoard(getGameboard().map(row => [...row]));
+                setScore(getScore());
+                setIsGameOver(getIsGameOver());
+                setMoves(getMovesCount());
+            }, 25); // fast interval for local AI
+
+            return () => clearInterval(interval);
         }
-        if (!isAiRunning || isGameOver) return;
 
-        const interval = setInterval(async () => {
-            const currentBoard = boardRef.current;
+        // --- Python AI (wait-for-response moves) ---
+        let movesMade = 0;
+        const maxMoves = 3; // number of test moves
+        const runPythonAiMove = async () => {
+            if (!isAiRunning || isGameOver) {
+                setIsAiRunning(false);
+                return;
+            }
 
-            const bestMoveObj = await getMove(currentBoard, aiModel);
+            movesMade++;
+            const bestMoveObj = await getMove(boardRef.current, aiModel);
+
+            // Check again after Python response
+            if (!isAiRunningRef.current || isGameOver) return;
 
             if (!bestMoveObj || !bestMoveObj.direction) {
-                setIsAiRunning(false); // Stop AI if no valid moves
-                clearInterval(interval);
+                setIsAiRunning(false);
                 return;
             }
 
@@ -99,10 +161,16 @@ export default function TwoZeroFourEight() {
             setScore(getScore());
             setIsGameOver(getIsGameOver());
             setMoves(getMovesCount());
-        }, 25);
 
-        return () => clearInterval(interval);
-    }, [isAiRunning, isGameOver]);
+            // Optional small delay to see moves in UI
+            setTimeout(runPythonAiMove, 250);
+        };
+
+        if (aiModel === "pythonQ") {
+            runPythonAiMove();
+        }
+
+    }, [isAiRunning, isGameOver, aiModel]);
 
 
     const handleRestart = () => {
@@ -188,6 +256,13 @@ export default function TwoZeroFourEight() {
                                 >
                                     Neural Network
                                 </button>
+                                <button
+                                    className={`px-2 py-1 rounded ${aiModel === "pythonQ" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                    onClick={() => setAiModel("pythonQ")}
+                                >
+                                    Q learning
+                                </button>
+
                             </div>)}
                     </div>
                     <div className="mt-4">

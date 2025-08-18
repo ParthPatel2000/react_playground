@@ -157,8 +157,21 @@ export async function getMove(gameboard, model) {
             result = expectiMax(gameboard, 2, true);
             return result.direction ? result : { direction: "UP" };
         case "neuralNet":
-            result = await NeuralNet(gameboard);
+            result = await NeuralNet(gameboard, true);
             return result.direction ? result : { direction: "UP" };
+        case "pythonQ":
+            {
+                const response = await fetch("http://localhost:5000/get_move", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ gameboard })
+                });
+                const data = await response.json();
+                return data.direction ? data : { direction: "UP" };
+            }
+            
         default:
             throw new Error(`Unknown model: ${model}`);
     }

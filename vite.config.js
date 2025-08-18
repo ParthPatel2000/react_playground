@@ -1,22 +1,8 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// export default defineConfig({
-//   plugins: [react()],
-//   optimizeDeps: {
-//     exclude: ['onnxruntime-node']
-//   },
-//   build: {
-//     rollupOptions: {
-//       external: ['onnxruntime-node']
-//     }
-//   }
-// })
-
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
+  base: '/react_playground/',
   plugins: [react()],
   optimizeDeps: {
     exclude: ['onnxruntime-node']

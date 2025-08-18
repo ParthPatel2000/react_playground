@@ -1,5 +1,15 @@
 
+
 # React Games Playground
+
+
+<a href="https://parthpatel2000.github.io/react_playground/" target="_blank">
+	<img src="https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github&labelColor=24292f&color=43d17d&logoColor=white&borderRadius=20" alt="Live Demo" style="border-radius: 12px;">
+</a>
+<a href="https://parthpatel2000.github.io/react_playground/" target="_blank">
+	<img src="https://img.shields.io/badge/status-active-success?style=for-the-badge&borderRadius=20" alt="Status" style="border-radius: 12px;">
+</a>
+
 
 
 ## About This Project
