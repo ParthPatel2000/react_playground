@@ -2,13 +2,12 @@
 
 # React Games Playground
 
-<a href="https://parthpatel2000.github.io/react_playground/" target="_blank">
-  <img src="https://img.shields.io/badge/Live-Demo-brightgreen?style=for-the-badge&logo=github&color=43d17d&logoColor=white" 
-       alt="Live Demo" 
-       style="border-radius: 12px;">
-</a>
+<a href="https://parthpatel2000.github.io/react_playground/" target="_blank" style="text-decoration: none;"><img src="https://img.shields.io/badge/Live-Demo-brightgreen?logo=github&color=43d17d&logoColor=white&borderRadius=12" alt="Live Demo"></a> <img src="https://img.shields.io/badge/status-active-success?logo=github&color=43d17d&logoColor=white&borderRadius=12" alt="Status">
 
 
+### Technologies Used
+
+<img src="https://img.shields.io/badge/React-18-blue?logo=react&logoColor=white&borderRadius=12" alt="React 18"> <img src="https://img.shields.io/badge/Vite-3BB873?logo=vite&logoColor=white&borderRadius=12" alt="Vite"> <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white&borderRadius=12" alt="Tailwind CSS"> <img src="https://img.shields.io/badge/ONNX_Runtime_web-orange?logo=onnx&logoColor=white&borderRadius=12" alt="ONNX Runtime Web"> <img src="https://img.shields.io/badge/ONNX_Runtime_node-orange?logo=onnx&logoColor=white&borderRadius=12" alt="ONNX Runtime Node"> <img src="https://img.shields.io/badge/JavaScript-ES6-yellow?logo=javascript&logoColor=black&borderRadius=12" alt="JavaScript (ES6+)"> <img src="https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white&borderRadius=12" alt="Node.js">
 
 ## About This Project
 
