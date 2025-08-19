@@ -16,7 +16,7 @@ async function runGames() {
         
         while (!gameOver) {
             const board = getGameboard();
-            const bestMoveObj = await getMove(board, "expectiMax");
+            const bestMoveObj = await getMove(board, "neuralNet");
             
             if (!bestMoveObj || !bestMoveObj.direction) {
                 gameOver = true;

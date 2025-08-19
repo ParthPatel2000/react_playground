@@ -140,7 +140,7 @@ function moveRIGHT(gameboard) {
     return { score: result.score, gameboard: gameboard };
 }
 
-export async function getMove(gameboard, model) {
+export async function getMove(gameboard, model, expectiMaxDepth = 2) {
 
     console.log("Getting move using model:", model);
     let result;
@@ -154,7 +154,7 @@ export async function getMove(gameboard, model) {
         case "monotonicity":
             return maximizeMonotonicity(gameboard);
         case "expectiMax":
-            result = expectiMax(gameboard, 2, true);
+            result = expectiMax(gameboard, expectiMaxDepth, true);
             return result.direction ? result : { direction: "UP" };
         case "neuralNet":
             result = await NeuralNet(gameboard, true);
@@ -496,22 +496,22 @@ function expectiMax(board, depth, isMaxNode) {
 }
 
 
-// async function main() {
-//     isDev = false;
-//     const gameboard = [
-//         [16, 8, 4, 2],
-//         [16, 8, 4, 2],
-//         [16, 8, 4, 2],
-//         [16, 8, 4, 2],
-//         [16, 8, 4, 0]
-//     ];
-//     // const gameboard = [
-//     //     [2, 0],
-//     //     [2, 0]
-//     // ];
+async function main() {
+    isDev = false;
+    const gameboard = [
+        [16, 8, 4, 2],
+        [16, 8, 4, 2],
+        [16, 8, 4, 2],
+        [16, 8, 4, 2],
+        [16, 8, 4, 0]
+    ];
+    // const gameboard = [
+    //     [2, 0],
+    //     [2, 0]
+    // ];
 
-//     const bestMove = await getMove(gameboard, "neuralNet");
-//     console.log("Best Move:", bestMove);
-// }
+    const bestMove = await getMove(gameboard, "expectiMax", 3);
+    console.log("Best Move:", bestMove);
+}
 
-// main();
+main();

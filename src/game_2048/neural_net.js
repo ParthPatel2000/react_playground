@@ -138,3 +138,20 @@ export function cleanup() {
         session = null;
     }
 }
+
+
+async function main()
+{
+    const gameboard = [
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0],
+        [0, 0, 0, 0]
+    ];
+
+    const result = await NeuralNet(gameboard, true);
+    console.log("Neural Network Result:", result);
+}
+
+main();

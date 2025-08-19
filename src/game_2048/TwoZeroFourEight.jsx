@@ -21,6 +21,7 @@ export default function TwoZeroFourEight() {
     const [MergesWeight, setMergesWeight] = React.useState(3.0);
     const [ClusterWeight, setClusterWeight] = React.useState(2.0);
     const [MonotonicityWeight, setMonotonicityWeight] = React.useState(3.0);
+    const [expectiMaxDepth, setExpectiMaxDepth] = React.useState(2);
     const boardRef = React.useRef(board);
     const scoreRef = React.useRef(score);
     const movesRef = React.useRef(moves);
@@ -77,34 +78,6 @@ export default function TwoZeroFourEight() {
 
 
     {/** Auto play AI Logic */ }
-    // useEffect(() => {
-    //     if (isGameOver) {
-    //         setIsAiRunning(false);
-    //         return;
-    //     }
-    //     if (!isAiRunning || isGameOver) return;
-
-    //     const interval = setInterval(async () => {
-    //         const currentBoard = boardRef.current;
-
-    //         const bestMoveObj = await getMove(currentBoard, aiModel);
-
-    //         if (!bestMoveObj || !bestMoveObj.direction) {
-    //             setIsAiRunning(false); // Stop AI if no valid moves
-    //             clearInterval(interval);
-    //             return;
-    //         }
-
-    //         move(bestMoveObj.direction);
-
-    //         setBoard(getGameboard().map(row => [...row]));
-    //         setScore(getScore());
-    //         setIsGameOver(getIsGameOver());
-    //         setMoves(getMovesCount());
-    //     }, 25);
-
-    //     return () => clearInterval(interval);
-    // }, [isAiRunning, isGameOver]);
     useEffect(() => {
         if (!isAiRunningRef.current || isGameOver) return;
 
@@ -117,7 +90,7 @@ export default function TwoZeroFourEight() {
                     return;
                 }
 
-                const bestMoveObj = await getMove(boardRef.current, aiModel);
+                const bestMoveObj = await getMove(boardRef.current, aiModel, expectiMaxDepth);
                 if (!bestMoveObj || !bestMoveObj.direction) {
                     clearInterval(interval);
                     setIsAiRunning(false);
@@ -145,7 +118,7 @@ export default function TwoZeroFourEight() {
             }
 
             movesMade++;
-            const bestMoveObj = await getMove(boardRef.current, aiModel);
+            const bestMoveObj = await getMove(boardRef.current, aiModel, expectiMaxDepth);
 
             // Check again after Python response
             if (!isAiRunningRef.current || isGameOver) return;
@@ -166,7 +139,7 @@ export default function TwoZeroFourEight() {
             setTimeout(runPythonAiMove, 250);
         };
 
-        if (aiModel === "pythonQ") {
+        if (aiModel === "pythonQ" || aiModel === "expectiMax") {
             runPythonAiMove();
         }
 
@@ -184,7 +157,7 @@ export default function TwoZeroFourEight() {
 
     {/** Play AI Move */ }
     const handleAi = async () => {
-        const bestMove = await getMove(board, aiModel);
+        const bestMove = await getMove(board, aiModel, expectiMaxDepth);
         if (bestMove) {
             move(bestMove.direction);
             setBoard(getGameboard().map(row => [...row])); // Create a new array to trigger re-render
@@ -201,138 +174,126 @@ export default function TwoZeroFourEight() {
             <div className="relative w-full h-auto" style={{ minWidth: "400px", minHeight: "320px" }}>
 
                 {/* Controls panel positioned to the left */}
-                <div className="absolute top-0 left-6 w-48 bg-white rounded-lg shadow-md p-4">
-                    <h2 className="font-bold mb-2">Controls</h2>
-                    <button
-                        onClick={handleAi}
-                        className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
-                    >
-                        Next A.I Move
-                    </button>
-                    <button
-                        onClick={() => {
-                            if (isGameOver) handleRestart();
-                            setIsAiRunning(!isAiRunning);
-                        }}
-                        className={`mt-4 px-3 py-1 ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded  w-full`}
-                    >
-                        {isAiRunning ? "Stop AI" : "Start AI"}
-                    </button>
+                <div className="absolute top-0 left-6 space-y-4 w-48">
 
+                    {/* Controls */}
+                    <div className="bg-white rounded-lg shadow-md p-4">
+                        <h2 className="font-bold mb-2">Controls</h2>
+                        <button
+                            onClick={handleAi}
+                            className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+                        >
+                            Next A.I Move
+                        </button>
+                        <button
+                            onClick={() => {
+                                if (isGameOver) handleRestart();
+                                setIsAiRunning(!isAiRunning);
+                            }}
+                            className={`mt-4 px-3 py-1 ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded w-full`}
+                        >
+                            {isAiRunning ? "Stop AI" : "Start AI"}
+                        </button>
+                    </div>
 
-                    <div className="mt-4" >
+                    {/* AI Model Selector */}
+                    <div className="bg-white rounded-lg shadow-md p-4">
                         <h3 className="font-semibold mb-2 cursor-pointer select-none"
                             onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
-                        >Heuristic Models {isHeuristicModelSelectorOpen ? "-" : "+"}</h3>
-                        {isHeuristicModelSelectorOpen && (
-                            <div className="flex flex-col gap-2">
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "maximizeScore" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("maximizeScore")}
-                                >
-                                    Maximize Score
-                                </button>
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "maximizeMerges" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("maximizeMerges")}
-                                >
-                                    Maximize Merges
-                                </button>
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "clusterTiles" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("clusterTiles")}
-                                >
-                                    Cluster Tiles
-                                </button>
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "monotonicity" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("monotonicity")}
-                                >
-                                    Monotonicity
-                                </button>
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "neuralNet" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("neuralNet")}
-                                >
-                                    Neural Network
-                                </button>
-                                <button
-                                    className={`px-2 py-1 rounded ${aiModel === "pythonQ" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                    onClick={() => setAiModel("pythonQ")}
-                                >
-                                    Q learning
-                                </button>
+                        >
+                            Heuristic Models {isHeuristicModelSelectorOpen ? "-" : "+"}
+                        </h3>
 
-                            </div>)}
-                    </div>
-                    <div className="mt-4">
-                        <h3 className="font-semibold mb-2">ExpectiMax</h3>
                         <div className="flex flex-col gap-2">
-                            <button
-                                className={`px-2 py-1 rounded ${aiModel === "expectiMax" ? "bg-blue-600 text-white" : "bg-gray-200"}`}
-                                onClick={() => {
-                                    setAiModel("expectiMax")
-                                    setExpectiMaxWeights({
-                                        emptiness: emptinessWeight,
-                                        merges: MergesWeight,
-                                        cluster: ClusterWeight,
-                                        monotonicity: MonotonicityWeight
-                                    });
-                                }}
-                            >
-                                ExpectiMax
-                            </button>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm">Emptiness Weight</label>
-                                <input
-                                    type="number"
-                                    value={emptinessWeight}
-                                    onChange={(e) => {
-                                        setEmptinessWeight(parseFloat(e.target.value));
-                                        setExpectiMaxWeights({ emptiness: parseFloat(e.target.value) })
+                            {["maximizeScore", "maximizeMerges", "clusterTiles", "monotonicity", "expectiMax", "neuralNet", "pythonQ"].map(model => (
+                                <button
+                                    key={model}
+                                    className={`px-2 py-1 rounded ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                    onClick={() => {
+                                        setAiModel(model);
+                                        if (model === "expectiMax") {
+                                            setExpectiMaxWeights({
+                                                emptiness: emptinessWeight,
+                                                merges: MergesWeight,
+                                                cluster: ClusterWeight,
+                                                monotonicity: MonotonicityWeight
+                                            });
+                                        }
                                     }}
-                                    className="border rounded p-1"
-                                />
-
-                                <label className="text-sm">Merges Weight</label>
-                                <input
-                                    type="number"
-                                    value={MergesWeight}
-                                    onChange={(e) => {
-                                        setMergesWeight(parseFloat(e.target.value));
-                                        setExpectiMaxWeights({ merges: parseFloat(e.target.value) })
-                                    }}
-                                    className="border rounded p-1"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm">Cluster Weight</label>
-                                <input
-                                    type="number"
-                                    value={ClusterWeight}
-                                    onChange={(e) => {
-                                        setClusterWeight(parseFloat(e.target.value));
-                                        setExpectiMaxWeights({ cluster: parseFloat(e.target.value) })
-                                    }}
-                                    className="border rounded p-1"
-                                />
-                            </div>
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm">Monotonicity Weight</label>
-                                <input
-                                    type="number"
-                                    value={MonotonicityWeight}
-                                    onChange={(e) => {
-                                        setMonotonicityWeight(parseFloat(e.target.value));
-                                        setExpectiMaxWeights({ monotonicity: parseFloat(e.target.value) })
-                                    }}
-                                    className="border rounded p-1"
-                                />
-                            </div>
+                                >
+                                    {model === "maximizeScore" ? "Maximize Score" :
+                                        model === "maximizeMerges" ? "Maximize Merges" :
+                                            model === "clusterTiles" ? "Cluster Tiles" :
+                                                model === "monotonicity" ? "Monotonicity" :
+                                                    model === "expectiMax" ? "ExpectiMax" :
+                                                        model === "neuralNet" ? "Neural Network" :
+                                                            "Q learning"}
+                                </button>
+                            ))}
                         </div>
 
                     </div>
+
+                    {/* ExpectiMax Weights */}
+                    <div className="bg-white rounded-lg shadow-md p-4">
+                        <h3 className="font-semibold mb-2">ExpectiMax</h3>
+                        <div className="flex flex-col gap-2">
+                            <label className="text-sm">ExpectiMax Depth</label>
+                            <input
+                                type="number"
+                                className="border rounded p-1"
+                                value={expectiMaxDepth}
+                                onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
+                            />
+
+                            <label className="text-sm">Emptiness Weight</label>
+                            <input
+                                type="number"
+                                value={emptinessWeight}
+                                onChange={(e) => {
+                                    setEmptinessWeight(parseFloat(e.target.value));
+                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), emptiness: parseFloat(e.target.value) });
+                                }}
+                                className="border rounded p-1"
+                            />
+
+                            <label className="text-sm">Merges Weight</label>
+                            <input
+                                type="number"
+                                value={MergesWeight}
+                                onChange={(e) => {
+                                    setMergesWeight(parseFloat(e.target.value));
+                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), merges: parseFloat(e.target.value) });
+                                }}
+                                className="border rounded p-1"
+                            />
+
+                            <label className="text-sm">Cluster Weight</label>
+                            <input
+                                type="number"
+                                value={ClusterWeight}
+                                onChange={(e) => {
+                                    setClusterWeight(parseFloat(e.target.value));
+                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), cluster: parseFloat(e.target.value) });
+                                }}
+                                className="border rounded p-1"
+                            />
+
+                            <label className="text-sm">Monotonicity Weight</label>
+                            <input
+                                type="number"
+                                value={MonotonicityWeight}
+                                onChange={(e) => {
+                                    setMonotonicityWeight(parseFloat(e.target.value));
+                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), monotonicity: parseFloat(e.target.value) });
+                                }}
+                                className="border rounded p-1"
+                            />
+                        </div>
+                    </div>
+
                 </div>
+
                 {/* Centered board */}
                 <div
                     className="absolute left-1/2 top-0 transform -translate-x-1/2"
