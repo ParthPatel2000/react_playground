@@ -7,7 +7,7 @@ import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 function App() {
   return (
-    <Router basename='/react_playground'>
+    <Router>
       <nav className="p-4 bg-gray-200">
         <Link className="mr-4  hover:underline" to="/">Home</Link>
         <Link className="p-2 hover:underline" to="/tictactoe">Tic Tac Toe</Link>
