@@ -3,30 +3,38 @@ name: Deploy React Playground to GitHub Pages
 on:
   push:
     branches:
-      - main  # change if your default branch is different
+      - main  # deploy on pushes to main branch
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
+      # 1. Checkout the repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2. Setup Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
+      # 3. Install dependencies
       - name: Install dependencies
         run: npm ci
 
+      # 4. Build the Vite project
       - name: Build project
         run: npm run build
 
+      # 5. Deploy to GitHub Pages (first-time safe)
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          allow_empty_commit: true   # helps first-time deploy if branch doesn't exist
+          keep_files: false           # ensures only latest build files are deployed
+          enable_jekyll: false        # prevents GitHub from ignoring files
