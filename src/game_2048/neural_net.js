@@ -7,7 +7,7 @@ const MOVE_DIRECTIONS = ['up', 'down', 'left', 'right'];
 function getModelPath() {
     if (typeof window !== 'undefined') {
         // Browser - file must be in public directory
-        const modelPath = `${import.meta.env.BASE_URL}Onnx_models/model_2048_for_js.onnx`;
+        const modelPath = `${import.meta.env.BASE_URL}/Onnx_models/model_2048_for_js.onnx`;
         return modelPath;
     } else {
         // Node.js - can use your current path
