@@ -1,0 +1,28 @@
+name: Generate Dynamic Badges
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  badges:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate badges
+        uses: schneegans/dynamic-badges-action@v1
+        with:
+          badges: |
+            - label: 'Live Demo'
+              message: 'https://parthpatel2000.github.io/react_playground/'
+              color: 'brightgreen'
+            - label: 'Status'
+              message: 'Active'
+              color: 'success'
