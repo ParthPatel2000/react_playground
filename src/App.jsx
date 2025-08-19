@@ -3,7 +3,7 @@ import React from 'react'
 import TicTacToe from './TicTacToe'
 import TowerDefense from './TowerDefense'
 import TwoZeroFourEight from './game_2048/TwoZeroFourEight'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
 function App() {
   return (
