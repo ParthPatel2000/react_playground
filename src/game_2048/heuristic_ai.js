@@ -158,6 +158,7 @@ export async function getMove(gameboard, model) {
             return result.direction ? result : { direction: "UP" };
         case "neuralNet":
             result = await NeuralNet(gameboard, true);
+            console.log("Using NeuralNet model");
             return result.direction ? result : { direction: "UP" };
         case "pythonQ":
             {

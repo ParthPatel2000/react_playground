@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "build:local": "vite build --mode development && serve -s dist",
+    "preview:gh-pages": "vite build && vite preview --base=/react_playground/",
+    "lint": "eslint ."
   },
   "dependencies": {
     "onnxruntime-node": "^1.22.0-rev",
