@@ -6,7 +6,7 @@ const MOVE_DIRECTIONS = ['UP', 'DOWN', 'LEFT', 'RIGHT'];
 
 function getModelPath() {
     // Browser: model must be in public directory
-    return '/Onnx_models/model_2048_for_js.onnx';
+    return import.meta.env.BASE_URL + 'Onnx_models/model_2048_for_js.onnx';
 }
 
 let session;
