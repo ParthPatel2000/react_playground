@@ -216,7 +216,8 @@ export async function NeuralNet(gameboard) {
     board.flat().map(x => Math.log2(x === 0 ? 1 : x) / 16);
 
   // Ensure model is loaded
-  if (!session) await loadModel();
+  console.log('Model Path:', getModelPath());
+  if (!session) await loadModel('https://parthpatel2000.github.io/react_playground/Onnx_models/model_2048_for_js.onnx');
 
   try {
     const processedBoard = preProcessBoard(gameboard);
