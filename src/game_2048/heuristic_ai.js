@@ -160,6 +160,8 @@ export async function getMove(gameboard, model, expectiMaxDepth = 2) {
             result = await NeuralNet(gameboard, true);
             console.log("Using NeuralNet model");
             return result.direction ? result : { direction: "UP" };
+        case "geneticAlgorithm":
+            break;
         case "pythonQ":
             {
                 const response = await fetch("http://localhost:5000/get_move", {
@@ -172,7 +174,7 @@ export async function getMove(gameboard, model, expectiMaxDepth = 2) {
                 const data = await response.json();
                 return data.direction ? data : { direction: "UP" };
             }
-            
+
         default:
             throw new Error(`Unknown model: ${model}`);
     }

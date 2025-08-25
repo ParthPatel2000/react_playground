@@ -7,8 +7,6 @@ import {
 } from "./engine_2048";
 import { getMove, setExpectiMaxWeights } from "./heuristic_ai"
 
-
-
 export default function TwoZeroFourEight() {
     const [board, setBoard] = React.useState([]);
     const [score, setScore] = React.useState(0);
@@ -17,10 +15,12 @@ export default function TwoZeroFourEight() {
     const [isGameOver, setIsGameOver] = React.useState(false);
     const [aiModel, setAiModel] = React.useState("expectiMax");
     const [isHeuristicModelSelectorOpen, setIsHeuristicModelSelectorOpen] = React.useState(false);
-    const [emptinessWeight, setEmptinessWeight] = React.useState(1.0);
-    const [MergesWeight, setMergesWeight] = React.useState(3.0);
-    const [ClusterWeight, setClusterWeight] = React.useState(2.0);
-    const [MonotonicityWeight, setMonotonicityWeight] = React.useState(3.0);
+    const [expectiMaxWeights, saveExpectiMaxWeights] = React.useState({
+        emptiness: 1.0,
+        merges: 3.0,
+        cluster: 2.0,
+        monotonicity: 3.0
+    });
     const [expectiMaxDepth, setExpectiMaxDepth] = React.useState(2);
     const boardRef = React.useRef(board);
     const scoreRef = React.useRef(score);
@@ -75,7 +75,6 @@ export default function TwoZeroFourEight() {
         movesRef.current = moves;
         isAiRunningRef.current = isAiRunning;
     }, [board, score, moves, isAiRunning]);
-
 
     {/** Auto play AI Logic */ }
     useEffect(() => {
@@ -145,7 +144,6 @@ export default function TwoZeroFourEight() {
 
     }, [isAiRunning, isGameOver, aiModel]);
 
-
     const handleRestart = () => {
         resetGame();
         setBoard(getGameboard().map(row => [...row])); // Create a new array to trigger re-render
@@ -166,179 +164,271 @@ export default function TwoZeroFourEight() {
         }
     };
 
+    // Extract GameBoard component
+    const GameBoard = ({ board }) => (
+        <div className="bg-gray-300 inline-block p-2 rounded">
+            {board.map((row, rowIndex) => (
+                <div key={rowIndex} className="grid grid-cols-4 gap-1 mb-1">
+                    {row.map((tile, colIndex) => (
+                        <div
+                            key={colIndex}
+                            className={`w-16 aspect-square flex items-center justify-center font-bold text-lg rounded
+                                ${tile === 0 ? "bg-gray-100" :
+                                    tile === 2 ? "bg-yellow-100" :
+                                        tile === 4 ? "bg-yellow-200" :
+                                            tile === 8 ? "bg-orange-300" :
+                                                tile === 16 ? "bg-orange-400" :
+                                                    tile === 32 ? "bg-red-400" :
+                                                        tile === 64 ? "bg-red-500" :
+                                                            tile === 128 ? "bg-purple-400" :
+                                                                tile === 256 ? "bg-purple-500" :
+                                                                    tile === 512 ? "bg-indigo-500" :
+                                                                        tile === 1024 ? "bg-indigo-600" :
+                                                                            tile === 2048 ? "bg-green-500" :
+                                                                                "bg-gray-400"
+                                }`}
+                        >
+                            {tile !== 0 ? tile : ""}
+                        </div>
+                    ))}
+                </div>
+            ))}
+        </div>
+    );
+
     return (
-        <div>
+        <div className="min-h-screen bg-gray-50">
             <h1 className="text-2xl font-bold mb-4 p-4"> Two cero 4 ocho </h1>
 
-            {/* Game Board */}
-            <div className="relative w-full h-auto" style={{ minWidth: "400px", minHeight: "320px" }}>
+            {/* Desktop Layout - Hidden on mobile */}
+            <div className="hidden md:block">
+                <div className="relative w-full h-auto" style={{ minWidth: "400px", minHeight: "320px" }}>
+                    {/* Controls panel positioned to the left */}
+                    <div className="absolute top-0 left-6 space-y-4 w-48">
+                        {/* Controls */}
+                        <div className="bg-white rounded-lg shadow-md p-4">
+                            <h2 className="font-bold mb-2">Controls</h2>
+                            <button
+                                onClick={handleAi}
+                                className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+                            >
+                                Next A.I Move
+                            </button>
+                            <button
+                                onClick={() => {
+                                    if (isGameOver) handleRestart();
+                                    setIsAiRunning(!isAiRunning);
+                                }}
+                                className={`mt-4 px-3 py-1 ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded w-full`}
+                            >
+                                {isAiRunning ? "Stop AI" : "Start AI"}
+                            </button>
+                        </div>
 
-                {/* Controls panel positioned to the left */}
-                <div className="absolute top-0 left-6 space-y-4 w-48">
+                        {/* AI Model Selector */}
+                        <div className="bg-white rounded-lg shadow-md p-4">
+                            <h3 className="font-semibold mb-2 cursor-pointer select-none"
+                                onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
+                            >
+                                Heuristic Models {isHeuristicModelSelectorOpen ? "-" : "+"}
+                            </h3>
 
-                    {/* Controls */}
-                    <div className="bg-white rounded-lg shadow-md p-4">
-                        <h2 className="font-bold mb-2">Controls</h2>
+                            {isHeuristicModelSelectorOpen && (
+                                <div className="flex flex-col gap-2">
+                                    {["maximizeScore", "maximizeMerges", "clusterTiles", "monotonicity", "expectiMax", "neuralNet", "pythonQ"].map(model => (
+                                        <button
+                                            key={model}
+                                            className={`px-2 py-1 rounded ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                            onClick={() => {
+                                                setAiModel(model);
+                                                if (model === "expectiMax") {
+                                                    setExpectiMaxWeights({
+                                                        emptiness: expectiMaxWeights.emptiness,
+                                                        merges: expectiMaxWeights.merges,
+                                                        cluster: expectiMaxWeights.cluster,
+                                                        monotonicity: expectiMaxWeights.monotonicity
+                                                    });
+                                                }
+                                            }}
+                                        >
+                                            {model === "maximizeScore" ? "Maximize Score" :
+                                                model === "maximizeMerges" ? "Maximize Merges" :
+                                                    model === "clusterTiles" ? "Cluster Tiles" :
+                                                        model === "monotonicity" ? "Monotonicity" :
+                                                            model === "expectiMax" ? "ExpectiMax" :
+                                                                model === "neuralNet" ? "Neural Network" :
+                                                                    "Q learning"}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* ExpectiMax Weights */}
+                        <div className="bg-white rounded-lg shadow-md p-4">
+                            <h3 className="font-semibold mb-2">ExpectiMax</h3>
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm">ExpectiMax Depth</label>
+                                <input
+                                    type="number"
+                                    className="border rounded p-1"
+                                    value={expectiMaxDepth}
+                                    onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
+                                />
+
+                                {Object.entries(expectiMaxWeights).map(([key, value]) => (
+                                    <React.Fragment key={key}>
+                                        <label className="text-sm capitalize">{key} Weight</label>
+                                        <input
+                                            type="number"
+                                            step="0.1"
+                                            className="border rounded p-1 ml-2"
+                                            value={value}
+                                            onChange={(e) => {
+                                                saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                            }} />
+                                    </React.Fragment>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Centered board */}
+                    <div
+                        className="absolute left-1/2 top-0 transform -translate-x-1/2"
+                        style={{ width: "fit-content" }}
+                    >
+                        <GameBoard board={board} />
+                    </div>
+
+                    {/* Stats panel positioned to the right */}
+                    <div className="absolute top-0 right-6 w-48 bg-white rounded-lg shadow-md p-4">
+                        <h2 className="font-bold mb-2">Stats</h2>
+                        <p className="text-sm mb-1">Score: <span className="font-semibold">{score}</span></p>
+                        <p className="text-sm mb-1">Moves: <span className="font-semibold">{moves}</span></p>
+                        {isGameOver && <p className="text-red-500 font-bold text-sm mb-2">Game Over!</p>}
+                        <button onClick={handleRestart} className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Restart
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Mobile Layout - Hidden on desktop */}
+            <div className="md:hidden px-4 pb-4">
+                {/* Stats at top on mobile */}
+                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <p className="text-sm">Score: <span className="font-semibold">{score}</span></p>
+                            <p className="text-sm">Moves: <span className="font-semibold">{moves}</span></p>
+                            {isGameOver && <p className="text-red-500 font-bold text-sm">Game Over!</p>}
+                        </div>
+                        <button onClick={handleRestart} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                            Restart
+                        </button>
+                    </div>
+                </div>
+
+                {/* Game board centered */}
+                <div className="flex justify-center mb-4">
+                    <GameBoard board={board} />
+                </div>
+
+                {/* Controls below board */}
+                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                    <h2 className="font-bold mb-2">Controls</h2>
+                    <div className="flex gap-2">
                         <button
                             onClick={handleAi}
-                            className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 w-full"
+                            className="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
                         >
-                            Next A.I Move
+                            Next AI Move
                         </button>
                         <button
                             onClick={() => {
                                 if (isGameOver) handleRestart();
                                 setIsAiRunning(!isAiRunning);
                             }}
-                            className={`mt-4 px-3 py-1 ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded w-full`}
+                            className={`flex-1 px-3 py-2 text-sm ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded`}
                         >
                             {isAiRunning ? "Stop AI" : "Start AI"}
                         </button>
                     </div>
+                </div>
 
-                    {/* AI Model Selector */}
-                    <div className="bg-white rounded-lg shadow-md p-4">
-                        <h3 className="font-semibold mb-2 cursor-pointer select-none"
-                            onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
-                        >
-                            Heuristic Models {isHeuristicModelSelectorOpen ? "-" : "+"}
-                        </h3>
+                {/* AI Model Selector - Collapsible on mobile */}
+                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                    <h3 className="font-semibold mb-2 cursor-pointer select-none flex justify-between items-center"
+                        onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
+                    >
+                        <span>AI Models</span>
+                        <span>{isHeuristicModelSelectorOpen ? "−" : "+"}</span>
+                    </h3>
 
-                        <div className="flex flex-col gap-2">
+                    {isHeuristicModelSelectorOpen && (
+                        <div className="grid grid-cols-2 gap-2">
                             {["maximizeScore", "maximizeMerges", "clusterTiles", "monotonicity", "expectiMax", "neuralNet", "pythonQ"].map(model => (
                                 <button
                                     key={model}
-                                    className={`px-2 py-1 rounded ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                    className={`px-2 py-1 rounded text-xs ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
                                     onClick={() => {
                                         setAiModel(model);
                                         if (model === "expectiMax") {
                                             setExpectiMaxWeights({
-                                                emptiness: emptinessWeight,
-                                                merges: MergesWeight,
-                                                cluster: ClusterWeight,
-                                                monotonicity: MonotonicityWeight
+                                                emptiness: expectiMaxWeights.emptiness,
+                                                merges: expectiMaxWeights.merges,
+                                                cluster: expectiMaxWeights.cluster,
+                                                monotonicity: expectiMaxWeights.monotonicity
                                             });
                                         }
                                     }}
                                 >
-                                    {model === "maximizeScore" ? "Maximize Score" :
-                                        model === "maximizeMerges" ? "Maximize Merges" :
-                                            model === "clusterTiles" ? "Cluster Tiles" :
-                                                model === "monotonicity" ? "Monotonicity" :
+                                    {model === "maximizeScore" ? "Max Score" :
+                                        model === "maximizeMerges" ? "Max Merges" :
+                                            model === "clusterTiles" ? "Cluster" :
+                                                model === "monotonicity" ? "Monotonic" :
                                                     model === "expectiMax" ? "ExpectiMax" :
-                                                        model === "neuralNet" ? "Neural Network" :
-                                                            "Q learning"}
+                                                        model === "neuralNet" ? "Neural Net" :
+                                                            "Q-Learning"}
                                 </button>
                             ))}
                         </div>
+                    )}
+                </div>
 
-                    </div>
-
-                    {/* ExpectiMax Weights */}
+                {/* ExpectiMax Weights - Show on mobile when ExpectiMax is selected */}
+                {(aiModel === "expectiMax" || aiModel === "pythonQ") && (
                     <div className="bg-white rounded-lg shadow-md p-4">
-                        <h3 className="font-semibold mb-2">ExpectiMax</h3>
-                        <div className="flex flex-col gap-2">
-                            <label className="text-sm">ExpectiMax Depth</label>
-                            <input
-                                type="number"
-                                className="border rounded p-1"
-                                value={expectiMaxDepth}
-                                onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
-                            />
+                        <h3 className="font-semibold mb-2">ExpectiMax Settings</h3>
+                        <div className="space-y-3">
+                            <div>
+                                <label className="text-sm block mb-1">Depth</label>
+                                <input
+                                    type="number"
+                                    className="border rounded p-2 w-full"
+                                    value={expectiMaxDepth}
+                                    onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
+                                />
+                            </div>
 
-                            <label className="text-sm">Emptiness Weight</label>
-                            <input
-                                type="number"
-                                value={emptinessWeight}
-                                onChange={(e) => {
-                                    setEmptinessWeight(parseFloat(e.target.value));
-                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), emptiness: parseFloat(e.target.value) });
-                                }}
-                                className="border rounded p-1"
-                            />
-
-                            <label className="text-sm">Merges Weight</label>
-                            <input
-                                type="number"
-                                value={MergesWeight}
-                                onChange={(e) => {
-                                    setMergesWeight(parseFloat(e.target.value));
-                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), merges: parseFloat(e.target.value) });
-                                }}
-                                className="border rounded p-1"
-                            />
-
-                            <label className="text-sm">Cluster Weight</label>
-                            <input
-                                type="number"
-                                value={ClusterWeight}
-                                onChange={(e) => {
-                                    setClusterWeight(parseFloat(e.target.value));
-                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), cluster: parseFloat(e.target.value) });
-                                }}
-                                className="border rounded p-1"
-                            />
-
-                            <label className="text-sm">Monotonicity Weight</label>
-                            <input
-                                type="number"
-                                value={MonotonicityWeight}
-                                onChange={(e) => {
-                                    setMonotonicityWeight(parseFloat(e.target.value));
-                                    setExpectiMaxWeights({ ...getExpectiMaxWeights(), monotonicity: parseFloat(e.target.value) });
-                                }}
-                                className="border rounded p-1"
-                            />
+                            {Object.entries(expectiMaxWeights).map(([key, value]) => (
+                                <div key={key}>
+                                    <label className="text-sm capitalize block mb-1">{key} Weight</label>
+                                    <input
+                                        type="number"
+                                        step="0.1"
+                                        className="border rounded p-2 w-full"
+                                        value={value}
+                                        onChange={(e) => {
+                                            saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                        }}
+                                    />
+                                </div>
+                            ))}
                         </div>
                     </div>
-
-                </div>
-
-                {/* Centered board */}
-                <div
-                    className="absolute left-1/2 top-0 transform -translate-x-1/2"
-                    style={{ width: "fit-content" }}
-                >
-                    {/* Your game board here */}
-                    <div className="bg-gray-300 inline-block p-2 rounded">
-                        {board.map((row, rowIndex) => (
-                            <div key={rowIndex} className="grid grid-cols-4 gap-1 mb-1">
-                                {row.map((tile, colIndex) => (
-                                    <div
-                                        key={colIndex}
-                                        className={`w-16 aspect-square flex items-center justify-center font-bold text-lg rounded
-                                            ${tile === 0 ? "bg-gray-100" :
-                                                tile === 2 ? "bg-yellow-100" :
-                                                    tile === 4 ? "bg-yellow-200" :
-                                                        tile === 8 ? "bg-orange-300" :
-                                                            tile === 16 ? "bg-orange-400" :
-                                                                tile === 32 ? "bg-red-400" :
-                                                                    tile === 64 ? "bg-red-500" :
-                                                                        tile === 128 ? "bg-purple-400" :
-                                                                            tile === 256 ? "bg-purple-500" :
-                                                                                tile === 512 ? "bg-indigo-500" :
-                                                                                    tile === 1024 ? "bg-indigo-600" :
-                                                                                        tile === 2048 ? "bg-green-500" :
-                                                                                            "bg-gray-400"
-                                            }`}
-                                    >
-                                        {tile !== 0 ? tile : ""}
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* Stats panel positioned to the right */}
-                <div className="absolute top-0 right-6 w-48 bg-white rounded-lg shadow-md p-4">
-                    <h2 className="font-bold mb-2">Stats</h2>
-                    <p className="text-sm mb-1">Score: <span className="font-semibold">{score}</span></p>
-                    <p className="text-sm mb-1">Moves: <span className="font-semibold">{moves}</span></p>
-                    <button onClick={handleRestart} className="mt-4 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Restart
-                    </button>
-                </div>
+                )}
             </div>
         </div>
     );

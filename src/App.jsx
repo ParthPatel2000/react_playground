@@ -1,7 +1,7 @@
 import './App.css'
 import React from 'react'
 import TicTacToe from './TicTacToe'
-import TowerDefense from './TowerDefense'
+import TowerDefense from './game_tower_defense/TowerDefense'
 import TwoZeroFourEight from './game_2048/TwoZeroFourEight'
 import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom'
 
