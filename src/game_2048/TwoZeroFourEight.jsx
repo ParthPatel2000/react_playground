@@ -15,7 +15,7 @@ export default function TwoZeroFourEight() {
     const [isGameOver, setIsGameOver] = React.useState(false);
     const [aiModel, setAiModel] = React.useState("expectiMax");
     const [isHeuristicModelSelectorOpen, setIsHeuristicModelSelectorOpen] = React.useState(false);
-    const [expectiMaxWeights, saveExpectiMaxWeights] = React.useState({
+    const [expectiMaxWeights, setExpectiMaxWeights] = React.useState({
         emptiness: 1.0,
         merges: 3.0,
         cluster: 2.0,
@@ -75,6 +75,84 @@ export default function TwoZeroFourEight() {
         movesRef.current = moves;
         isAiRunningRef.current = isAiRunning;
     }, [board, score, moves, isAiRunning]);
+
+    {/** Handle touch/swipe input for mobile */ }
+    useEffect(() => {
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+        let isGameBoardTouch = false;
+
+        const handleTouchStart = (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            
+            // Check if touch started on game board
+            const target = e.target;
+            isGameBoardTouch = target.closest('.game-board-area') !== null;
+        };
+
+        const handleTouchMove = (e) => {
+            // Prevent scrolling only when touching the game board
+            if (isGameBoardTouch) {
+                e.preventDefault();
+            }
+        };
+
+        const handleTouchEnd = (e) => {
+            if (!isGameBoardTouch) return; // Only handle swipes that started on game board
+            
+            touchEndX = e.changedTouches[0].screenX;
+            touchEndY = e.changedTouches[0].screenY;
+            handleSwipe();
+        };
+
+        const handleSwipe = () => {
+            const deltaX = touchEndX - touchStartX;
+            const deltaY = touchEndY - touchStartY;
+            const minSwipeDistance = 50; // Minimum distance for a swipe
+
+            // Check if the swipe distance is significant enough
+            if (Math.abs(deltaX) < minSwipeDistance && Math.abs(deltaY) < minSwipeDistance) {
+                return; // Too short to be considered a swipe
+            }
+
+            // Determine direction - prioritize the larger delta
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                // Horizontal swipe
+                if (deltaX > 0) {
+                    move("RIGHT");
+                } else {
+                    move("LEFT");
+                }
+            } else {
+                // Vertical swipe
+                if (deltaY > 0) {
+                    move("DOWN");
+                } else {
+                    move("UP");
+                }
+            }
+
+            // Update game state after move
+            setBoard(getGameboard().map(row => [...row]));
+            setScore(getScore());
+            setIsGameOver(getIsGameOver());
+            setMoves(getMovesCount());
+        };
+
+        // Add touch event listeners to the document
+        document.addEventListener('touchstart', handleTouchStart, { passive: true });
+        document.addEventListener('touchmove', handleTouchMove, { passive: false }); // Not passive so we can preventDefault
+        document.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+        return () => {
+            document.removeEventListener('touchstart', handleTouchStart);
+            document.removeEventListener('touchmove', handleTouchMove);
+            document.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, []);
 
     {/** Auto play AI Logic */ }
     useEffect(() => {
@@ -198,7 +276,7 @@ export default function TwoZeroFourEight() {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <h1 className="text-2xl font-bold mb-4 p-4"> Two cero 4 ocho </h1>
+            <h1 className="text-2xl font-bold mb-4 p-4 text-center md:text-left">Two Zero 4 Eight</h1>
 
             {/* Desktop Layout - Hidden on mobile */}
             <div className="hidden md:block">
@@ -285,7 +363,7 @@ export default function TwoZeroFourEight() {
                                             className="border rounded p-1 ml-2"
                                             value={value}
                                             onChange={(e) => {
-                                                saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                                setExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
                                             }} />
                                     </React.Fragment>
                                 ))}
@@ -295,7 +373,7 @@ export default function TwoZeroFourEight() {
 
                     {/* Centered board */}
                     <div
-                        className="absolute left-1/2 top-0 transform -translate-x-1/2"
+                        className="absolute left-1/2 top-0 transform -translate-x-1/2 game-board-area touch-none select-none"
                         style={{ width: "fit-content" }}
                     >
                         <GameBoard board={board} />
@@ -332,7 +410,9 @@ export default function TwoZeroFourEight() {
 
                 {/* Game board centered */}
                 <div className="flex justify-center mb-4">
-                    <GameBoard board={board} />
+                    <div className="select-none game-board-area touch-none"> {/* Prevent text selection and default touch behaviors */}
+                        <GameBoard board={board} />
+                    </div>
                 </div>
 
                 {/* Controls below board */}
@@ -421,7 +501,7 @@ export default function TwoZeroFourEight() {
                                         className="border rounded p-2 w-full"
                                         value={value}
                                         onChange={(e) => {
-                                            saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                            setExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
                                         }}
                                     />
                                 </div>
