@@ -12,42 +12,74 @@ export default function TowerDefense() {
         game.current.addTower(2, 1, "freeze");
         game.current.addTower(3, 1, "laser");
         game.current.addEnemy(5, 0, "grunt");
+        game.current.addProjectile(0, 9, game.current.enemies[0], "basic");
+        game.current.addProjectile(0, 8, game.current.enemies[0], "laser");
         setState(game.current.getGameState());
     }, []);
 
+    const TILE_SIZE = 50;
 
-    // Render the game grid as a table for better layout
     const renderBoard = () => (
-        <table className="game-grid">
-            <tbody>
-                {state.grid.map((row, y) => (
-                    <tr key={y}>
-                        {row.map((cell, x) => (
-                            <td
-                                key={`${x}-${y}`}
-                                className={`border text-center ${cell ?
-                                    cell.cellType === 'enemy' ? "bg-red-300" :
-                                        cell.cellType === 'tower' ? "bg-blue-300" :
-                                            cell.cellType === 'enemy_path' ? "bg-green-300" : "bg-gray-100" :
-                                    "bg-gray-100"}`}
-                                style={{ width: 40, height: 40 }}
-                            >
-                                <button className="h-full w-full" onClick={() => handleCellClick(x, y)}>
-                                    {cell ?
-                                        cell.cellType === "enemy" ? "E" :
-                                            cell.cellType === "tower" ? "T" :
-                                                cell.cellType === "enemy_path" ? "P" :
-                                                    " "
-                                        : " "}
-                                </button>
+        <div className="relative" style={{ width: state.grid[0].length * TILE_SIZE, height: state.grid.length * TILE_SIZE }}>
 
-                            </td>
-                        ))}
-                    </tr>
-                ))}
-            </tbody>
-        </table>
+            {/* Render grid cells */}
+            {state.grid.map((row, y) =>
+                row.map((cell, x) => (
+                    <button
+                        key={`${y}-${x}`}
+                        onClick={() => handleCellClick(y, x)}
+
+                        className={`absolute border p-0
+                            ${state.enemy_paths.some(path => path.some(step => step.x === x && step.y === y))
+                                ? "bg-green-300"            // path tiles are green
+                                : cell?.cellType === "tower"
+                                    ? "bg-blue-300"           // tower tiles blue
+                                    : "bg-gray-100"           // empty tiles
+                            }
+                        `}
+                        style={{
+                            top: y * TILE_SIZE,
+                            left: x * TILE_SIZE,
+                            width: TILE_SIZE,
+                            height: TILE_SIZE,
+                        }}
+                    >
+                        {cell?.cellType === "tower" ? "T" : ""}
+                    </button>
+                ))
+            )}
+
+            {/* Render enemies */}
+            {state.enemies.map((enemy, i) => (
+                <div
+                    key={i}
+                    className="absolute bg-red-500 rounded-full text-center font-bold text-white pointer-events-none flex items-center justify-center"
+                    style={{
+                        width: TILE_SIZE,
+                        height: TILE_SIZE,
+                        top: enemy.posY * TILE_SIZE,
+                        left: enemy.posX * TILE_SIZE,
+                    }}
+                >
+                    E
+                </div>
+            ))}
+
+            {/** Render projectiles */}
+            {state.projectiles.map((proj, i) => (
+                <div
+                    key={i}
+                    className="absolute w-[20px] h-[20px] bg-yellow-400 rounded-full pointer-events-none"
+                    style={{
+                        top: proj.posY * TILE_SIZE,
+                        left: proj.posX * TILE_SIZE,
+                    }}
+                />
+            ))}
+        </div>
     );
+
+
 
     const gameOver = () => {
         if (game.current.isGameOver) {
@@ -59,11 +91,12 @@ export default function TowerDefense() {
 
     const handleGameTick = () => {
         game.current.walkEnemyStep();
+        game.current.moveProjectiles();
         setState(game.current.getGameState());
     };
 
     //basic click handling done, add tower type popup later.
-    const handleCellClick = (x, y) => {
+    const handleCellClick = (y, x) => {
         if (game.current.isGameOver) return;
 
         const tower = game.current.grid[y][x];
@@ -74,7 +107,7 @@ export default function TowerDefense() {
             // Handle empty cell click (e.g., place tower)
             const towerType = prompt("Enter tower type (basic, freeze, laser):");
             if (towerType) {
-                game.current.addTower(x, y, towerType);
+                game.current.addTower(y, x, towerType);
                 setState(game.current.getGameState());
             }
         }
