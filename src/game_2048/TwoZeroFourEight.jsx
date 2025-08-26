@@ -244,7 +244,7 @@ export default function TwoZeroFourEight() {
 
     // Extract GameBoard component
     const GameBoard = ({ board }) => (
-        <div className="bg-gray-300 inline-block p-2 rounded">
+        <div className="bg-gray-800 inline-block p-2 rounded">
             {board.map((row, rowIndex) => (
                 <div key={rowIndex} className="grid grid-cols-4 gap-1 mb-1">
                     {row.map((tile, colIndex) => (
@@ -275,8 +275,8 @@ export default function TwoZeroFourEight() {
     );
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            <h1 className="text-2xl font-bold mb-4 p-4 text-center md:text-left">Two Zero 4 Eight</h1>
+        <div className=" w-full relative">
+            <h1 className="text-2xl font-bold mb-4 p-4 text-center text-white md:text-left">Two Zero 4 Eight</h1>
 
             {/* Desktop Layout - Hidden on mobile */}
             <div className="hidden md:block">
