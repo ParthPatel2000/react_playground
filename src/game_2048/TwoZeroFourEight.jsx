@@ -15,7 +15,7 @@ export default function TwoZeroFourEight() {
     const [isGameOver, setIsGameOver] = React.useState(false);
     const [aiModel, setAiModel] = React.useState("expectiMax");
     const [isHeuristicModelSelectorOpen, setIsHeuristicModelSelectorOpen] = React.useState(false);
-    const [expectiMaxWeights, setExpectiMaxWeights] = React.useState({
+    const [expectiMaxWeights, saveExpectiMaxWeights] = React.useState({
         emptiness: 1.0,
         merges: 3.0,
         cluster: 2.0,
@@ -363,7 +363,7 @@ export default function TwoZeroFourEight() {
                                             className="border rounded p-1 ml-2"
                                             value={value}
                                             onChange={(e) => {
-                                                setExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                                saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
                                             }} />
                                     </React.Fragment>
                                 ))}
@@ -501,7 +501,7 @@ export default function TwoZeroFourEight() {
                                         className="border rounded p-2 w-full"
                                         value={value}
                                         onChange={(e) => {
-                                            setExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
+                                            saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
                                         }}
                                     />
                                 </div>
