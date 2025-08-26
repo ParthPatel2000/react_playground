@@ -47,12 +47,12 @@ export default function Layout({ children }) {
                         },
                     },
                     particles: {
-                        number: { value: 30, density: { enable: true, area: 800 } },
+                        number: { value: 20, limit: 20, density: { enable: true, area: 800 } },
                         color: { value: ["#ff00cc", "#00ffff",] },
                         links: {
                             enable: true,
                             distance: 150,
-                            color: "#ffffff",
+                            color: "#a9aaab",
                             opacity: 0.5,
                             width: 1.5,
                         },

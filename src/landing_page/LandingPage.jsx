@@ -16,7 +16,7 @@ export default function LandingPage() {
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 px-4">
                 {/* Header */}
                 <motion.h1
-                    className="text-5xl md:text-6xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
+                    className="pb-3 text-5xl md:text-6xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500"
                     initial={{ opacity: 0, y: -50 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
