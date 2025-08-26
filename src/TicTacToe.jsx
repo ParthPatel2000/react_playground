@@ -74,8 +74,8 @@ export default function TicTacToe() {
                 </button>
             </div>
             <div className="flex justify-center items-center">
-                <h3 className="p-3 justify-center">Winner: {winner}</h3>
-                <h3 className="p-3 justify-center">Current Player: {currentPlayer}</h3>
+                <h3 className="p-3 text-white justify-center">Winner: {winner}</h3>
+                <h3 className="p-3 text-white justify-center">Current Player: {currentPlayer}</h3>
             </div>
             <div className="flex justify-center items-center">
                 {/* Game board will go here */}
