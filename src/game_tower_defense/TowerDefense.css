@@ -1,5 +1,3 @@
-@import '../app.css';
-
 .slow-ping {
   animation-duration: 4s !important; /* or 3s, 4s, etc. */
 }
