@@ -79,6 +79,18 @@ export default function TowerDefense() {
         }
 
     };
+    function StatusWindow({ messages = [] }) {
+        return (
+            <div className="bg-gray-800 bg-opacity-80 text-white rounded shadow p-2 min-w-[180px] max-w-[60vw] text-xs">
+                <div className="font-bold mb-1 text-blue-300">Status</div>
+                <ul className="space-y-1">
+                    {messages.map((msg, i) => (
+                        <li key={i}>{msg}</li>
+                    ))}
+                </ul>
+            </div>
+        );
+    }
 
     const renderTowerSelectionPopup = () => {
         if (!showTowerTypePopup || !towerPlacement) return null;
@@ -273,26 +285,22 @@ export default function TowerDefense() {
 
 
     return (
-        <div >
+        <div>
             <TargetCursor spinDuration={2} hideDefaultCursor={true} />
-            <h1>Tower Defense Game</h1>
-            <div className="flex justify-center items-center ">
+            <h1 className="text-2xl font-bold mb-4 p-2 text-center text-white md:text-center">Tower Defense Game</h1>
+            <div className="flex justify-center items-start gap-8">
                 {renderBoard()}
                 {gameOver()}
-                <button
-                    className="cursor-none cursor-target ml-4 p-2 bg-blue-500 text-white rounded"
-                    onClick={handleGameTick}>Next Turn</button>
-                <button
-                    className="cursor-target cursor-none ml-4 p-2 bg-yellow-500 text-white rounded"
-                    onClick={() => setPause(!pause)}>
-                    {pause ? "Resume" : "Pause"}
-                </button>
-
-                <button
-                    className="cursor-target cursor-none ml-4 p-2 bg-red-500 text-white rounded"
-                    onClick={handleReset}>
-                    Reset
-                </button>
+                <div className="flex flex-col items-left gap-8 ml-4">
+                    <StatusWindow messages={["hi"]} />
+                    <div className="flex flex-col gap-2">
+                        <button className="cursor-target cursor-none p-2 bg-blue-500 text-white rounded" onClick={handleGameTick}>Next Turn</button>
+                        <button className="cursor-target cursor-none p-2 bg-yellow-500 text-white rounded" onClick={() => setPause(!pause)}>
+                            {pause ? "Resume" : "Pause"}
+                        </button>
+                        <button className="cursor-target cursor-none p-2 bg-red-500 text-white rounded" onClick={handleReset}>Reset</button>
+                    </div>
+                </div>
             </div>
         </div>
     );
