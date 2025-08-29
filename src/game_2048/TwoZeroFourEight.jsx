@@ -276,7 +276,7 @@ export default function TwoZeroFourEight() {
 
     return (
         <div className=" w-full relative">
-            <h1 className="text-2xl font-bold mb-4 p-4 text-center text-white md:text-left">Two Zero 4 Eight</h1>
+            <h1 className="text-2xl font-bold mb-4 p-4 text-center text-white md:text-center">Two Zero 4 Eight</h1>
 
             {/* Desktop Layout - Hidden on mobile */}
             <div className="hidden md:block">

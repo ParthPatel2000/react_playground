@@ -32,6 +32,8 @@ A collection of interactive games and AI demos built with React and Vite. This p
 
 ## Features
 
+- **Custom Target Cursor in Tower Defense**: The Tower Defense game uses a spinning TargetCursor for a modern, interactive feel. The default mouse cursor is hidden over the grid and buttons, so only the animated target is visible when selecting or placing towers. Powered by [TargetCursor](https://reactbits.dev/tailwind/Animations/TargetCursor) and Tailwind CSS.
+
 ### 2048 Game
 - Play the classic 2048 puzzle game on a customizable grid (default 5x4).
 - Keyboard controls and responsive UI.
