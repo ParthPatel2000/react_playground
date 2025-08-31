@@ -7,6 +7,7 @@ import { HashRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import LandingPage from './landing_page/LandingPage'
 import Layout from './Layout'
 
+
 function App() {
   return (
     <Router>

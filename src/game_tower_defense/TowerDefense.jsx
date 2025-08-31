@@ -271,9 +271,40 @@ export default function TowerDefense() {
         </div>
     );
 
+    const pillshapeddiv = () => {
+        return (
+            <div className="flex items-center justify-between w-[420px] px-6 py-2 
+                    rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 
+                    mx-auto shadow-lg">
+                {/* Left side: Logo + Text */}
+                <div className="flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24"
+                        strokeWidth={1.5} stroke="currentColor"
+                        className="w-5 h-5 text-white/90">
+                        <path strokeLinecap="round" strokeLinejoin="round"
+                            d="M12 6v12m6-6H6" />
+                    </svg>
+                    <span className="text-white/90 font-medium">React Bits</span>
+                </div>
+
+                {/* Right side: Links */}
+                <div className="flex gap-6">
+                    <a href="#" className="text-white/70 hover:text-white transition text-sm">
+                        Home
+                    </a>
+                    <a href="#" className="text-white/70 hover:text-white transition text-sm">
+                        Docs
+                    </a>
+                </div>
+            </div>
+        );
+    }
+
 
     return (
         <div >
+            {pillshapeddiv()}
             <TargetCursor spinDuration={2} hideDefaultCursor={true} />
             <h1>Tower Defense Game</h1>
             <div className="flex justify-center items-center ">
