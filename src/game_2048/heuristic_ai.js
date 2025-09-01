@@ -498,22 +498,22 @@ function expectiMax(board, depth, isMaxNode) {
 }
 
 
-async function main() {
-    isDev = false;
-    const gameboard = [
-        [16, 8, 4, 2],
-        [16, 8, 4, 2],
-        [16, 8, 4, 2],
-        [16, 8, 4, 2],
-        [16, 8, 4, 0]
-    ];
-    // const gameboard = [
-    //     [2, 0],
-    //     [2, 0]
-    // ];
+// async function main() {
+//     isDev = false;
+//     const gameboard = [
+//         [16, 8, 4, 2],
+//         [16, 8, 4, 2],
+//         [16, 8, 4, 2],
+//         [16, 8, 4, 2],
+//         [16, 8, 4, 0]
+//     ];
+//     // const gameboard = [
+//     //     [2, 0],
+//     //     [2, 0]
+//     // ];
 
-    const bestMove = await getMove(gameboard, "expectiMax", 3);
-    console.log("Best Move:", bestMove);
-}
+//     const bestMove = await getMove(gameboard, "expectiMax", 3);
+//     console.log("Best Move:", bestMove);
+// }
 
-main();
+// main();

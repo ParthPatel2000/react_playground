@@ -1,0 +1,25 @@
+/* Chatbot Container */
+.chatbot-container {
+	@apply bg-gray-900 bg-opacity-80 rounded-lg shadow-lg p-4 max-w-md mx-auto flex flex-col h-[80vh];
+}
+
+/* Message Bubble (User) */
+.message-user {
+	@apply bg-gray-700 text-white rounded-lg px-4 py-2 mb-2 self-end max-w-[70%] shadow;
+}
+
+/* Message Bubble (Bot) */
+.message-bot {
+	@apply bg-gray-700 text-white rounded-lg px-4 py-2 mb-2 self-start max-w-[70%] shadow;
+}
+
+/* Input Area */
+.input-area {
+	@apply flex items-center mt-auto gap-2;
+}
+.input-box {
+	@apply flex-1 bg-gray-800 text-white rounded-lg px-4 py-2 outline-none border border-gray-600 focus:border-blue-500;
+}
+.send-btn {
+	@apply bg-blue-600 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-700 transition;
+}
