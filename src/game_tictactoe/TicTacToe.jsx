@@ -64,22 +64,15 @@ export default function TicTacToe() {
     };
 
     return (
-        <div className="mt-4">
-            <div className="flex justify-left items-center ">
-                <button onClick={resetGame} className="mb-4 p-2 bg-blue-500 text-white rounded">
-                    Reset Game
-                </button>
-                <button onClick={() => alert("Tic Tac Toe is a simple two-player game where players take turns marking Xs and Os on a 3x3 grid. The first player to get three of their marks in a row (horizontally, vertically, or diagonally) wins the game. If all nine squares are filled and neither player has three in a row, the game is a draw.")} className="mb-4 ml-4 p-2 bg-green-500 text-white rounded">
-                    How to Play
-                </button>
-            </div>
+        <div className="flex flex-col items-center mt-4 space-y-4">
+
             <div className="flex justify-center items-center">
                 <h3 className="p-3 text-white justify-center">Winner: {winner}</h3>
                 <h3 className="p-3 text-white justify-center">Current Player: {currentPlayer}</h3>
             </div>
-            <div className="inline-block glassmorphic p-5 mx-auto">
+            <div className="inline-block glassmorphic p-5 mx-auto ">
                 {/* Game board will go here */}
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 gap-4 text-black">
                     <button
                         onClick={() => handleClick(0)}
                         className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
@@ -143,8 +136,17 @@ export default function TicTacToe() {
                     >
                         {board[8]}
                     </button>
-                    
+
                 </div>
+
+            </div>
+            <div className="flex items-center ">
+                <button onClick={resetGame} className="mb-4 p-2 bg-blue-500 text-white rounded">
+                    Reset Game
+                </button>
+                <button onClick={() => alert("Tic Tac Toe is a simple two-player game where players take turns marking Xs and Os on a 3x3 grid. The first player to get three of their marks in a row (horizontally, vertically, or diagonally) wins the game. If all nine squares are filled and neither player has three in a row, the game is a draw.")} className="mb-4 ml-4 p-2 bg-green-500 text-white rounded">
+                    How to Play
+                </button>
             </div>
         </div>
     );

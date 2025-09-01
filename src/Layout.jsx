@@ -33,17 +33,26 @@ export default function Layout({ children }) {
         }}
       /> */}
 
-            {/* Fractals */}
+            {/* Free Floating Particles */}
             <Particles
                 className="absolute inset-0 w-full h-full z-0"
                 init={particlesInit}
                 options={{
                     background: { color: "#0f0f0f" },
-                    fpsLimit: 60,
+                    fpsLimit: 90,
                     interactivity: {
                         events: {
                             onHover: { enable: true, mode: "repulse" },
                             onClick: { enable: true, mode: "push" },
+                        },
+                        modes: {
+                            repulse: {
+                                distance: 150, // <--- this is the repulse radius
+                                duration: 0.4, // optional, how long the repulse lasts
+                            },
+                            push: {
+                                quantity: 4,
+                            },
                         },
                     },
                     particles: {

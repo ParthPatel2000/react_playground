@@ -87,7 +87,7 @@ export default function TwoZeroFourEight() {
         const handleTouchStart = (e) => {
             touchStartX = e.changedTouches[0].screenX;
             touchStartY = e.changedTouches[0].screenY;
-            
+
             // Check if touch started on game board
             const target = e.target;
             isGameBoardTouch = target.closest('.game-board-area') !== null;
@@ -102,7 +102,7 @@ export default function TwoZeroFourEight() {
 
         const handleTouchEnd = (e) => {
             if (!isGameBoardTouch) return; // Only handle swipes that started on game board
-            
+
             touchEndX = e.changedTouches[0].screenX;
             touchEndY = e.changedTouches[0].screenY;
             handleSwipe();
@@ -316,7 +316,7 @@ export default function TwoZeroFourEight() {
                                     {["maximizeScore", "maximizeMerges", "clusterTiles", "monotonicity", "expectiMax", "neuralNet", "pythonQ"].map(model => (
                                         <button
                                             key={model}
-                                            className={`px-2 py-1 rounded ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                            className={`px-2 py-1 ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-700/30"} backdrop-blur-sm flex flex-wrap gap-2 justify-center rounded `}
                                             onClick={() => {
                                                 setAiModel(model);
                                                 if (model === "expectiMax") {
@@ -346,10 +346,10 @@ export default function TwoZeroFourEight() {
                         <div className="glassmorphic p-4">
                             <h3 className="font-semibold mb-2">ExpectiMax</h3>
                             <div className="flex flex-col gap-2">
-                                <label className="text-sm">ExpectiMax Depth</label>
+                                <label className="text-sm ">ExpectiMax Depth</label>
                                 <input
                                     type="number"
-                                    className="border rounded p-1"
+                                    className="border rounded p-1 ml-2 text-black"
                                     value={expectiMaxDepth}
                                     onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
                                 />
@@ -360,7 +360,7 @@ export default function TwoZeroFourEight() {
                                         <input
                                             type="number"
                                             step="0.1"
-                                            className="border rounded p-1 ml-2"
+                                            className="text-black border rounded p-1 ml-2"
                                             value={value}
                                             onChange={(e) => {
                                                 saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
@@ -393,53 +393,57 @@ export default function TwoZeroFourEight() {
             </div>
 
             {/* Mobile Layout - Hidden on desktop */}
-            <div className="md:hidden px-4 pb-4">
-                {/* Stats at top on mobile */}
-                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+            <div className="md:hidden px-4 pb-4 space-y-4">
+
+                {/* Stats Panel */}
+                <div className="glassmorphic p-4 border border-white/30 text-white">
                     <div className="flex justify-between items-center">
                         <div>
                             <p className="text-sm">Score: <span className="font-semibold">{score}</span></p>
                             <p className="text-sm">Moves: <span className="font-semibold">{moves}</span></p>
                             {isGameOver && <p className="text-red-500 font-bold text-sm">Game Over!</p>}
                         </div>
-                        <button onClick={handleRestart} className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        <button
+                            onClick={handleRestart}
+                            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                        >
                             Restart
                         </button>
                     </div>
                 </div>
 
-                {/* Game board centered */}
-                <div className="flex justify-center mb-4">
-                    <div className="select-none game-board-area touch-none"> {/* Prevent text selection and default touch behaviors */}
+                {/* Game Board */}
+                <div className="flex justify-center">
+                    <div className="select-none game-board-area touch-none">
                         <GameBoard board={board} />
                     </div>
                 </div>
 
-                {/* Controls below board */}
-                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+                {/* Controls Panel */}
+                <div className="glassmorphic p-4 border border-white/30 text-white flex flex-col gap-2">
                     <h2 className="font-bold mb-2">Controls</h2>
-                    <div className="flex gap-2">
-                        <button
-                            onClick={handleAi}
-                            className="flex-1 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
-                        >
-                            Next AI Move
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (isGameOver) handleRestart();
-                                setIsAiRunning(!isAiRunning);
-                            }}
-                            className={`flex-1 px-3 py-2 text-sm ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"} text-white rounded`}
-                        >
-                            {isAiRunning ? "Stop AI" : "Start AI"}
-                        </button>
-                    </div>
+                    <button
+                        onClick={handleAi}
+                        className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full text-sm"
+                    >
+                        Next AI Move
+                    </button>
+                    <button
+                        onClick={() => {
+                            if (isGameOver) handleRestart();
+                            setIsAiRunning(!isAiRunning);
+                        }}
+                        className={`px-3 py-2 w-full text-sm rounded text-white ${isAiRunning ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+                            }`}
+                    >
+                        {isAiRunning ? "Stop AI" : "Start AI"}
+                    </button>
                 </div>
 
-                {/* AI Model Selector - Collapsible on mobile */}
-                <div className="bg-white rounded-lg shadow-md p-4 mb-4">
-                    <h3 className="font-semibold mb-2 cursor-pointer select-none flex justify-between items-center"
+                {/* AI Model Selector */}
+                <div className="glassmorphic p-4 border border-white/30 text-white">
+                    <h3
+                        className="font-semibold mb-2 cursor-pointer select-none flex justify-between items-center"
                         onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
                     >
                         <span>AI Models</span>
@@ -447,11 +451,12 @@ export default function TwoZeroFourEight() {
                     </h3>
 
                     {isHeuristicModelSelectorOpen && (
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="flex flex-col gap-2">
                             {["maximizeScore", "maximizeMerges", "clusterTiles", "monotonicity", "expectiMax", "neuralNet", "pythonQ"].map(model => (
                                 <button
                                     key={model}
-                                    className={`px-2 py-1 rounded text-xs ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-200"}`}
+                                    className={`px-2 py-1 rounded text-sm w-full ${aiModel === model ? "bg-blue-600 text-white" : "bg-gray-700/30"
+                                        } backdrop-blur-sm flex justify-center`}
                                     onClick={() => {
                                         setAiModel(model);
                                         if (model === "expectiMax") {
@@ -464,41 +469,42 @@ export default function TwoZeroFourEight() {
                                         }
                                     }}
                                 >
-                                    {model === "maximizeScore" ? "Max Score" :
-                                        model === "maximizeMerges" ? "Max Merges" :
-                                            model === "clusterTiles" ? "Cluster" :
-                                                model === "monotonicity" ? "Monotonic" :
+                                    {model === "maximizeScore" ? "Maximize Score" :
+                                        model === "maximizeMerges" ? "Maximize Merges" :
+                                            model === "clusterTiles" ? "Cluster Tiles" :
+                                                model === "monotonicity" ? "Monotonicity" :
                                                     model === "expectiMax" ? "ExpectiMax" :
-                                                        model === "neuralNet" ? "Neural Net" :
-                                                            "Q-Learning"}
+                                                        model === "neuralNet" ? "Neural Network" :
+                                                            "Q Learning"}
                                 </button>
                             ))}
                         </div>
                     )}
                 </div>
 
-                {/* ExpectiMax Weights - Show on mobile when ExpectiMax is selected */}
+                {/* ExpectiMax Weights */}
                 {(aiModel === "expectiMax" || aiModel === "pythonQ") && (
-                    <div className="bg-white rounded-lg shadow-md p-4">
+                    <div className="glassmorphic p-4 border border-white/30 text-white flex flex-col gap-2">
                         <h3 className="font-semibold mb-2">ExpectiMax Settings</h3>
-                        <div className="space-y-3">
-                            <div>
-                                <label className="text-sm block mb-1">Depth</label>
+
+                        <div className="flex flex-col gap-2">
+                            <div className="flex flex-col">
+                                <label className="text-sm mb-1">Depth</label>
                                 <input
                                     type="number"
-                                    className="border rounded p-2 w-full"
+                                    className="border rounded p-2 w-full text-black"
                                     value={expectiMaxDepth}
                                     onChange={(e) => setExpectiMaxDepth(parseInt(e.target.value))}
                                 />
                             </div>
 
                             {Object.entries(expectiMaxWeights).map(([key, value]) => (
-                                <div key={key}>
-                                    <label className="text-sm capitalize block mb-1">{key} Weight</label>
+                                <div key={key} className="flex flex-col">
+                                    <label className="text-sm mb-1 capitalize">{key} Weight</label>
                                     <input
                                         type="number"
                                         step="0.1"
-                                        className="border rounded p-2 w-full"
+                                        className="border rounded p-2 w-full text-black"
                                         value={value}
                                         onChange={(e) => {
                                             saveExpectiMaxWeights({ ...expectiMaxWeights, [key]: parseFloat(e.target.value) });
