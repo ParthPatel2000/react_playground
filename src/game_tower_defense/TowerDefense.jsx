@@ -89,7 +89,7 @@ export default function TowerDefense() {
 
     const statusWindow = () => {
         return (
-            <div className="bg-gray-800 bg-opacity-80 text-white rounded shadow p-2 min-w-[180px] max-w-[60vw] text-xs">
+            <div className=" bg-gray-800/30 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col z-50 border border-white/30 text-white p-2 min-w-[180px] max-w-[60vw] text-xs">
                 <div className="font-bold mb-1 text-blue-300">Status</div>
                 <ul className="space-y-1">
                     <li>Money: {money}</li>

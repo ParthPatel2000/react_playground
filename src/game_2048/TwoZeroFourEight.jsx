@@ -284,7 +284,7 @@ export default function TwoZeroFourEight() {
                     {/* Controls panel positioned to the left */}
                     <div className="absolute top-0 left-6 space-y-4 w-48">
                         {/* Controls */}
-                        <div className="bg-white rounded-lg shadow-md p-4">
+                        <div className="glassmorphic flex flex-col z-50 border border-white/30 text-white p-4">
                             <h2 className="font-bold mb-2">Controls</h2>
                             <button
                                 onClick={handleAi}
@@ -304,7 +304,7 @@ export default function TwoZeroFourEight() {
                         </div>
 
                         {/* AI Model Selector */}
-                        <div className="bg-white rounded-lg shadow-md p-4">
+                        <div className="glassmorphic p-4">
                             <h3 className="font-semibold mb-2 cursor-pointer select-none"
                                 onClick={() => setIsHeuristicModelSelectorOpen(!isHeuristicModelSelectorOpen)}
                             >
@@ -343,7 +343,7 @@ export default function TwoZeroFourEight() {
                         </div>
 
                         {/* ExpectiMax Weights */}
-                        <div className="bg-white rounded-lg shadow-md p-4">
+                        <div className="glassmorphic p-4">
                             <h3 className="font-semibold mb-2">ExpectiMax</h3>
                             <div className="flex flex-col gap-2">
                                 <label className="text-sm">ExpectiMax Depth</label>
@@ -380,7 +380,7 @@ export default function TwoZeroFourEight() {
                     </div>
 
                     {/* Stats panel positioned to the right */}
-                    <div className="absolute top-0 right-6 w-48 bg-white rounded-lg shadow-md p-4">
+                    <div className="absolute top-0 right-6 w-48 glassmorphic p-4">
                         <h2 className="font-bold mb-2">Stats</h2>
                         <p className="text-sm mb-1">Score: <span className="font-semibold">{score}</span></p>
                         <p className="text-sm mb-1">Moves: <span className="font-semibold">{moves}</span></p>

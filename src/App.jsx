@@ -1,6 +1,6 @@
 import './App.css'
 import React from 'react'
-import TicTacToe from './TicTacToe'
+import TicTacToe from './game_tictactoe/TicTacToe.jsx'
 import TowerDefense from './game_tower_defense/TowerDefense'
 import TwoZeroFourEight from './game_2048/TwoZeroFourEight'
 import ChatbotUI from './chatbot/chatbotui.jsx'

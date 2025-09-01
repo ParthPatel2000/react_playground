@@ -52,7 +52,7 @@ export default function ChatbotUI() {
             )}
 
             {open && (
-                <div className="fixed bottom-6 right-6 w-[340px] h-[420px] bg-gray-800/30 backdrop-blur-sm rounded-2xl shadow-2xl flex flex-col z-50 border border-white/30">
+                <div className="flex flex-col fixed bottom-6 right-6 w-[340px] h-[420px] glassmorphic">
                     {/* Header */}
                     <div className="p-4 bg-black/80 text-white rounded-t-2xl flex justify-between items-center border-b border-white/20 shadow-md">
                         <span>AI Parth</span>
