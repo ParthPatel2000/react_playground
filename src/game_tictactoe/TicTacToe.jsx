@@ -70,68 +70,69 @@ export default function TicTacToe() {
                 <h3 className="p-3 text-white justify-center">Winner: {winner}</h3>
                 <h3 className="p-3 text-white justify-center">Current Player: {currentPlayer}</h3>
             </div>
-            <div className="inline-block glassmorphic p-5 mx-auto ">
+            <div className="inline-block glassmorphic p-5 mx-auto w-full max-w-[360px]">
+
                 {/* Game board will go here */}
                 <div className="grid grid-cols-3 gap-4 text-black">
                     <button
                         onClick={() => handleClick(0)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 0"
                     >
                         {board[0]}
                     </button>
                     <button
                         onClick={() => handleClick(1)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 1"
                     >
                         {board[1]}
                     </button>
                     <button
                         onClick={() => handleClick(2)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 2"
                     >
                         {board[2]}
                     </button>
                     <button
                         onClick={() => handleClick(3)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 3"
                     >
                         {board[3]}
                     </button>
                     <button
                         onClick={() => handleClick(4)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 4"
                     >
                         {board[4]}
                     </button>
                     <button
                         onClick={() => handleClick(5)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 5"
                     >
                         {board[5]}
                     </button>
                     <button
                         onClick={() => handleClick(6)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 6"
                     >
                         {board[6]}
                     </button>
                     <button
                         onClick={() => handleClick(7)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 7"
                     >
                         {board[7]}
                     </button>
                     <button
                         onClick={() => handleClick(8)}
-                        className="relative w-24 h-24 bg-gray-300 flex items-center justify-center text-4xl font-bold"
+                        className="bg-gray-300 flex items-center justify-center text-4xl font-bold rounded aspect-square w-full"
                         title="Cell 8"
                     >
                         {board[8]}
