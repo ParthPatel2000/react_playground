@@ -94,7 +94,7 @@ export default function TowerDefense() {
                 <ul className="space-y-1">
                     <li>Money: {money}</li>
                     <li>Game Status: {gameStatus}</li>
-                    <li>Waves Survived: {game.current.wave - 1}</li>
+                    <li>Waves Survived: {game.current.wave}</li>
                 </ul>
             </div>
         );
