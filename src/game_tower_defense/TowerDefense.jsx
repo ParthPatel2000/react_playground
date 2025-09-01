@@ -7,12 +7,14 @@ export default function TowerDefense() {
 
     const game = useRef(new TowerDefenseGame());
     const [state, setState] = useState(game.current.getGameState());
-    const towerTypes = game.current.getTowerTypes();
     const [showTowerTypePopup, setShowTowerTypePopup] = useState(false);
     const [towerPlacement, setTowerPlacement] = useState(null);
     const [tickRateMs, setTickRateMs] = useState(60);
+    const [money, setMoney] = useState(game.current.money);
     const [pause, setPause] = useState(true);
+    const [gameStatus, setGameStatus] = useState("In Progress");
     const [count, setCount] = useState(1);
+    const towerTypes = game.current.towerTypes;
     const countRef = useRef(count);
 
     useEffect(() => {
@@ -22,16 +24,15 @@ export default function TowerDefense() {
     const initGame = () => {
         game.current = new TowerDefenseGame();
         game.current.makeEnemyPath();
-        game.current.addTower(1, 1, "basic");
-        game.current.addTower(2, 1, "freeze");
-        game.current.addTower(4, 3, "basic");
-        game.current.addEnemy(5, 0, "grunt");
         setState(game.current.getGameState());
+        setMoney(game.current.money);
     };
 
     const gameOver = () => {
         if (game.current.isGameOver) {
-            // window.alert("Game Over!");
+            setGameStatus(game.current.isWin ? "You Win!" : "Game Over!");
+            statusWindow();
+            setPause(true);
             handleReset();
         }
     };
@@ -41,16 +42,17 @@ export default function TowerDefense() {
     };
 
     const handleGameTick = () => {
-        game.current.moveEnemies();
-        game.current.moveProjectiles();
-        game.current.updateTowerTargets();
+        game.current.tick();
         setState(game.current.getGameState());
-        if (countRef.current % 10 === 0) {
-            game.current.addEnemy(5, 0, "grunt");
-            countRef.current = 1;
-        }
-        countRef.current++;
-        // console.log(game.current.getGameState().projectiles[0]);
+        setMoney(game.current.money);
+        setGameStatus(game.current.isGameOver ? "" : "In Progress");
+        statusWindow();
+        // console.log("React money:", money, "Game Money:", game.current.money);
+        console.log("*************************************");
+        console.log("React gameStatus:", gameStatus, "Game Status:", game.current.isGameOver ? "Game Over" : "In Progress");
+        console.log("enemies:", game.current.enemies);
+        // console.log("projectiles:", game.current.projectiles);
+        console.log("wave:", game.current.wave, "waveTimer:", game.current.waveTimer, "activeWaveEnemies:", game.current.activeWaveEnemies);
     };
 
     // Game loop
@@ -62,6 +64,10 @@ export default function TowerDefense() {
 
         return () => { clearInterval(interval), setPause(true); };
     }, [tickRateMs, pause]);
+
+    useEffect(() => {
+        setMoney(game.current.money);
+    }, [game.current.money]);
 
 
     //basic click handling done, add tower type popup later.
@@ -77,16 +83,18 @@ export default function TowerDefense() {
             setTowerPlacement({ y, x }); // store the cell for placement
             setShowTowerTypePopup(true); // show the popup
         }
-
+        statusWindow();
     };
-    function StatusWindow({ messages = [] }) {
+
+
+    const statusWindow = () => {
         return (
             <div className="bg-gray-800 bg-opacity-80 text-white rounded shadow p-2 min-w-[180px] max-w-[60vw] text-xs">
                 <div className="font-bold mb-1 text-blue-300">Status</div>
                 <ul className="space-y-1">
-                    {messages.map((msg, i) => (
-                        <li key={i}>{msg}</li>
-                    ))}
+                    <li>Money: {money}</li>
+                    <li>Game Status: {gameStatus}</li>
+                    <li>Waves Survived: {game.current.wave - 1}</li>
                 </ul>
             </div>
         );
@@ -292,7 +300,7 @@ export default function TowerDefense() {
                 {renderBoard()}
                 {gameOver()}
                 <div className="flex flex-col items-left gap-8 ml-4">
-                    <StatusWindow messages={["hi"]} />
+                    {statusWindow()}
                     <div className="flex flex-col gap-2">
                         <button className="cursor-target cursor-none p-2 bg-blue-500 text-white rounded" onClick={handleGameTick}>Next Turn</button>
                         <button className="cursor-target cursor-none p-2 bg-yellow-500 text-white rounded" onClick={() => setPause(!pause)}>
