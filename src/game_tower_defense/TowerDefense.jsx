@@ -466,7 +466,7 @@ export default function TowerDefense() {
                         {towerTypes.map(type => (
                             <button
                                 key={type}
-                                className="px-4 py-2 bg-blue-500 text-white rounded"
+                                className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2"
                                 onClick={() => {
                                     game.current.addTower(towerPlacement.y, towerPlacement.x, type);
                                     setState(game.current.getGameState());

@@ -107,7 +107,7 @@ export default function ChatbotUI() {
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleSend()}
                             placeholder="Type your message..."
-                            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
+                            className="flex-1 text-black border border-gray-300 rounded-lg px-3 py-2 text-sm outline-none focus:border-blue-500"
                         />
                         <button
                             onClick={handleSend}
