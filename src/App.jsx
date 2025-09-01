@@ -3,6 +3,7 @@ import React from 'react'
 import TicTacToe from './TicTacToe'
 import TowerDefense from './game_tower_defense/TowerDefense'
 import TwoZeroFourEight from './game_2048/TwoZeroFourEight'
+import ChatbotUI from './chatbot/chatbotui.jsx'
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom'
 import LandingPage from './landing_page/LandingPage'
 import Layout from './Layout'
@@ -36,6 +37,7 @@ function App() {
   return (
     <Router>
       <AppContent />
+      <ChatbotUI />
     </Router>
   )
 }

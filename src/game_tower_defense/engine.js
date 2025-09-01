@@ -14,7 +14,7 @@ export default class TowerDefenseGame {
         this.waveInterval = 20;     // ticks between enemy spawns within a wave
         this.activeWaveEnemies = 0;
         this.waves = options.waves || [
-            { type: 'grunt', count: 1 , interval: 15 },
+            { type: 'grunt', count: 1, interval: 15 },
             { type: 'fast', count: 1, interval: 5 },
             { type: 'strong', count: 1, interval: 20 }
         ];
@@ -79,6 +79,17 @@ export default class TowerDefenseGame {
 
     }
 
+    applyDamageToEnemy(tower) {
+        if (!tower.target || tower.target.health <= 0) return;
+        const damage = tower.power;
+        tower.target.health -= damage;
+        if (tower.target.health <= 0) {
+            this.money += tower.target.reward;
+            this.enemies = this.enemies.filter(e => e !== tower.target);
+            // this.grid[tower.target.posY][tower.target.posX] = null;
+        }
+    }
+
     addProjectile(y, x, targetEnemy, type) {
         const towerStats = this.getTowerStats(type);
         const homing = type === "laser";
@@ -89,13 +100,16 @@ export default class TowerDefenseGame {
             targetX: targetEnemy.posX, targetY: targetEnemy.posY,
             distanceTraveled: 0, type,
             range: towerStats.range, speed: towerStats.range, power: towerStats.power,
-            cellType: "projectile", hit: false, homing
+            cellType: "projectile", hit: false, expired: false, homing
         };
         this.projectiles.push(projectile);
     }
 
+
+
     moveProjectiles() {
-        const EPS = 0.5;
+        const EPS = 0.01;
+        console.log("Projectiles before move:", this.projectiles);
         for (const proj of this.projectiles) {
             let moveX = 0, moveY = 0;
             if (proj.homing) {
@@ -122,10 +136,10 @@ export default class TowerDefenseGame {
             }
             proj.distanceTraveled += Math.sqrt(moveX * moveX + moveY * moveY);
             if (!proj.hit && (proj.distanceTraveled >= proj.range || (Math.abs(proj.posX - proj.targetX) < EPS && Math.abs(proj.posY - proj.targetY) < EPS))) {
-                proj.hit = true;
+                proj.expired = true;
             }
         }
-        this.projectiles = this.projectiles.filter(p => !p.hit);
+        this.projectiles = this.projectiles.filter(p => !p.hit && !p.expired);
     }
 
     updateTowerTargets() {
@@ -140,7 +154,10 @@ export default class TowerDefenseGame {
                         if (dist <= cell.range && dist < nearestDist && enemy.health > 0) { nearestEnemy = enemy; nearestDist = dist; }
                     }
                     cell.target = nearestEnemy;
-                    if (nearestEnemy) this.addProjectile(y, x, nearestEnemy, cell.type);
+                    if (nearestEnemy) {
+                        this.addProjectile(y, x, nearestEnemy, cell.type);
+                        this.applyDamageToEnemy(cell);
+                    }
                 }
             }
         }
@@ -178,7 +195,7 @@ export default class TowerDefenseGame {
     }
 
     startNextWave() {
-        console.log("****************************\n***************************\nStarting next wave");
+        console.log("****************************\n****************************\nStarting next wave");
         this.wave++;
 
         if (this.wave >= this.waves.length) {
@@ -207,7 +224,7 @@ export default class TowerDefenseGame {
     tick() {
         this.moveEnemies();
         this.updateTowerTargets();
-        this.moveProjectiles();
+        // this.moveProjectiles();
         this.spawnWaveTick();
     }
 }

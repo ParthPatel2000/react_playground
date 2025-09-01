@@ -42,17 +42,17 @@ export default function TowerDefense() {
     };
 
     const handleGameTick = () => {
-        game.current.tick();
-        setState(game.current.getGameState());
-        setMoney(game.current.money);
-        setGameStatus(game.current.isGameOver ? "" : "In Progress");
-        statusWindow();
         // console.log("React money:", money, "Game Money:", game.current.money);
         console.log("*************************************");
         console.log("React gameStatus:", gameStatus, "Game Status:", game.current.isGameOver ? "Game Over" : "In Progress");
         console.log("enemies:", game.current.enemies);
         // console.log("projectiles:", game.current.projectiles);
         console.log("wave:", game.current.wave, "waveTimer:", game.current.waveTimer, "activeWaveEnemies:", game.current.activeWaveEnemies);
+        game.current.tick();
+        setState(game.current.getGameState());
+        setMoney(game.current.money);
+        setGameStatus(game.current.isGameOver ? "" : "In Progress");
+        statusWindow();
     };
 
     // Game loop
