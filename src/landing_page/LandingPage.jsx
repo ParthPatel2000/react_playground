@@ -21,7 +21,7 @@ export default function LandingPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 1 }}
                 >
-                    Welcome to React Playground
+                    Welcome to Parth's React Playground
                 </motion.h1>
 
                 {/* Buttons */}

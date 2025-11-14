@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Chatbot from "./chatbot.js";
+import { q } from "framer-motion/client";
 
 export default function ChatbotUI() {
   const [open, setOpen] = useState(false);
@@ -86,6 +87,12 @@ export default function ChatbotUI() {
     setQueue([]);
   };
 
+  // inside ChatbotUI
+  const enqueueBotMessage = (text) => {
+    setQueue((prev) => [...prev, { sender: "bot", text }]);
+  };
+
+
   return (
     <>
       {!open && (
@@ -106,7 +113,7 @@ export default function ChatbotUI() {
               <button className="text-sm px-2 py-1 bg-gray-700 rounded"
                 onClick={handleClear}>Clear</button>
               <button className="text-white text-xl"
-                onClick={() => setOpen(false)}>×</button>
+                onClick={() => setOpen(false)}> × </button>
             </div>
           </div>
 
